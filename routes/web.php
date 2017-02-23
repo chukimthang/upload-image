@@ -12,5 +12,17 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('shop/create');
 });
+
+Route::resource('shop', 'ShopController', ['only' => 'create']);
+
+Route::post('shop/uploadImage', [
+    'as' => 'shop.uploadImage',
+    'uses' => 'ShopController@postUploadImage'
+]);
+
+Route::post('shop/addShopAjax', [
+    'as' => 'shop.addShopAjax',
+    'uses' => 'ShopController@postAddShopAjax'
+]);

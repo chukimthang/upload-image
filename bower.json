@@ -1,0 +1,22 @@
+{
+  "name": "flickr-image",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Thang <chukimthang94@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/chukimthang/upload-image",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}
