@@ -26,3 +26,15 @@ Route::post('shop/addShopAjax', [
     'as' => 'shop.addShopAjax',
     'uses' => 'ShopController@postAddShopAjax'
 ]);
+
+Route::resource('product', 'ProductController', ['only' => 'create']);
+
+Route::post('product/uploadImage', [
+    'as' => 'product.uploadImage',
+    'uses' => 'ProductController@postUploadImage'
+]);
+
+Route::post('product/addProductAjax', [
+    'as' => 'product.addproductAjax',
+    'uses' => 'ProductController@postAddProductAjax'
+]);

@@ -19,6 +19,7 @@
     <div class="form-group">
         {!! Form::label('avatar', 'Avatar') !!}
         {!! Form::file('avatar', ['id' => 'photo', 'accept' => 'image/*']) !!}
+        <br>
         {!! Form::submit('Upload', ['id' => 'upload']) !!}
         <div id="process" style="display: none">Process...</div>
         <p id="image-display"></p>

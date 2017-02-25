@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Shop;
 use RemoteImageUploader\Factory;
-use App\Http\Requests\ShopAddRequest;
+use App\Http\Requests\ProductRequest;
+use Illuminate\Support\Facades\DB;
+
+use App\Product;
+use App\Image;
 use Validator;
 
-class ShopController extends Controller
+class ProductController extends Controller
 {
     public function create()
     {
-        return view('shop.create');
+        return view('product.create');
     }
 
     public function postUploadImage(Request $request)
@@ -40,7 +43,6 @@ class ShopController extends Controller
                 'url' => $result,
                 'message' => 'Upload successfull!',
             ];
-
         } catch (\Exception $ex) {
             return [
                 'status' => false,
@@ -50,11 +52,30 @@ class ShopController extends Controller
         }
     }
 
-    public function postAddShopAjax(ShopAddRequest $request)
+    public function postAddProductAjax(ProductRequest $request)
     {
-        $data = $request->only('name', 'address', 'avatar');
-        Shop::create($data);
-        
-        return response()->json(['sms' => 'Add Success']);
+        $data = $request->only('name', 'price', 'description', 'image');
+        try {
+            DB::beginTransaction();
+
+            $product = Product::create($data);
+            if (empty($data['image'])) {
+                DB::rollback();
+
+                return response()->json(['sms' => 'Image null']);
+            }
+            foreach ($data['image'] as $key => $value) {
+                $image = ['name' => $value, 'product_id' => $product->id];
+                Image::create($image);
+            }
+            
+            DB::commit();
+
+            return response()->json(['sms' => 'Add Success']);
+        } catch (ValidatorException $e) {
+            DB::rollback();
+        } catch (Exception $e) {
+            DB::rollback();
+        }
     }
 }
