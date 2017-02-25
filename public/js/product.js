@@ -1,7 +1,6 @@
-function uploadPhoto(url) {
+function product() {
   var current = this;
-  this.url = url;
-  var dataImage = '';
+  var dataImage = [];
 
   this.init = function () {
     $.ajaxSetup({
@@ -10,9 +9,9 @@ function uploadPhoto(url) {
       }
     });
 
-    $('#upload').on('click', function () {
-      if (typeof $('#photo')[0].files[0] !== 'undefined') {
-        current.uploadFile($('#photo')[0].files[0]);
+    $('#upload-product').on('click', function () {
+      if (typeof $('#photo-product')[0].files[0] !== 'undefined') {
+        current.uploadFile($('#photo-product')[0].files[0]);
       } else {
         alert('File field is empty');
       }
@@ -23,23 +22,26 @@ function uploadPhoto(url) {
 
   this.uploadFile = function (file) {
     var formData = new FormData();
-    $('#upload').prop('disabled', true);
-    $('#process').show();
+    $('#upload-product').prop('disabled', true);
+    $('#process-product').show();
     formData.append('upload', file);
 
     current.currentUpload = $.ajax({
-      url: current.url,
+      url: '/product/uploadImage',
       type: 'post', 
       dataType: 'json',
       complete: function (data) {
-        $('#upload').prop('disabled', false);
-        $('#process').hide();
+        $('#upload-product').prop('disabled', false);
+        $('#process-product').hide();
         switch (data.status) {
           case 200:
-            dataImage = data.responseJSON.url;
-            $('#image-display').html('');
-            $('#image-display').append("<img src='" + dataImage + "' alt='' width='100px' height='100px'>");
-            // alert(data.responseJSON.message);
+            dataImage.push(data.responseJSON.url);
+            $('#display-product').html('');
+            for (var i = dataImage.length - 1; i >= 0; i--) {
+              $('#display-product').append("<img src='" + dataImage[i] 
+                + "' alt='' width='100px' height='100px'>"
+              );
+            }
             break;
           case 500: 
             alert('Unknown error: ' + data.status);
@@ -58,13 +60,14 @@ function uploadPhoto(url) {
   this.add = function() {
     $('.form-group').on('click', '.btn-primary', function () {
       $.ajax({
-        url: '/shop/addShopAjax',
+        url: '/product/addProductAjax',
         type: 'POST',
         dataType: 'json',
         data: {
           name: $('#name').val(),
-          address: $('#address').val(),
-          avatar: dataImage
+          price: $('#price').val(),
+          description: $('#description').val(),
+          image: dataImage
         },
         success: function(data) {
           $('.form-error').html('');
